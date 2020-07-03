@@ -1,0 +1,3 @@
+[submodule "lib/BurpUnity"]
+	path = lib/BurpUnity
+	url = https://github.com/BurpTech/BurpUnity.git

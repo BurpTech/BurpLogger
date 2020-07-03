@@ -1,0 +1,24 @@
+{
+  "name": "BurpLogger",
+  "keywords": "logging",
+  "description": "Namespaced logging with user defined transports",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/BurpTech/BurpLogger"
+  },
+  "authors":
+  [
+    {
+      "name": "Peter Halliday",
+      "email": "pghalliday@gmail.com",
+      "url": "http://pghalliday.com",
+      "maintainer": true
+    }
+  ],
+  "dependencies": [
+  ],
+  "version": "1.0.0",
+  "frameworks": "*",
+  "platforms": "*"
+}
