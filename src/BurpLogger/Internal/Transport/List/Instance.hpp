@@ -21,9 +21,9 @@ namespace BurpLogger {
               _transports(transports)
             {}
 
-            void log(const Entry::Interface & entry) const {
+            void log(const Context & context, const Entry::Interface & entry) const {
               for (auto transport : _transports) {
-                transport->log(entry);
+                transport->log(context, entry);
               }
             }
 

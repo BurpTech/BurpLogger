@@ -29,17 +29,17 @@ namespace BurpLogger {
           using Entry = Entry::Instance<messageSize>;
 
           Instance(const char * label, const Transport::List::Interface & transportList) :
-            _labels(label),
+            _context(label),
             _transportList(transportList)
           {}
 
           Instance(const char * label, Interface & parent) :
-            _labels(label, parent.getLabels()),
+            _context(label, &(parent.getContext())),
             _transportList(parent.getTransportList())
           {}
 
-          const Labels * getLabels() const override {
-            return &_labels;
+          const Context & getContext() const override {
+            return _context;
           }
 
           const Transport::List::Interface & getTransportList() const override {
@@ -47,8 +47,8 @@ namespace BurpLogger {
           }
 
           void log(Level::Level level, const char * format, va_list args) override {
-            const Entry entry(&_labels, level, format, args);
-            _transportList.log(entry);
+            const Entry entry(level, format, args);
+            _transportList.log(_context, entry);
           }
 
           void log(Level::Level level, const char * format, ...) override {
@@ -67,7 +67,7 @@ namespace BurpLogger {
 
         private:
 
-          const Labels _labels;
+          const Context _context;
           const Transport::List::Interface & _transportList;
 
       };

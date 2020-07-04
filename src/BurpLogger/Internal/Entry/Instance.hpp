@@ -14,15 +14,10 @@ namespace BurpLogger {
 
         public:
 
-          Instance(const Labels * labels, const Level::Level level, const char * format, va_list args) :
-            _labels(labels),
+          Instance(const Level::Level level, const char * format, va_list args) :
             _level(level)
           {
             vsnprintf(_message, messageSize, format, args);
-          }
-
-          const Labels * getLabels() const {
-            return _labels;
           }
 
           const Level::Level getLevel() const {
@@ -35,7 +30,6 @@ namespace BurpLogger {
 
         private:
 
-          const Labels * _labels;
           const Level::Level _level;
           char _message[messageSize];
 

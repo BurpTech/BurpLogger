@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdarg.h>
-#include "../Labels.hpp"
+#include "../Context.hpp"
 #include "../Transport/List/Interface.hpp"
 #include "../Level.hpp"
 
@@ -17,7 +17,7 @@ namespace BurpLogger {
 
         public:
 
-          virtual const Labels * getLabels() const = 0;
+          virtual const Context & getContext() const = 0;
           virtual const Transport::List::Interface & getTransportList() const = 0;
 
           virtual void log(Level::Level level, const char * format, va_list args) = 0;

@@ -5,18 +5,18 @@
 namespace BurpLogger {
   namespace Internal {
 
-    class Labels {
+    class Context {
 
       public:
 
-        Labels(const char * label, const Labels * parent = nullptr);
+        Context(const char * label, const Context * parent = nullptr);
         const char * getLabel() const;
-        const Labels * getParent() const;
+        const Context * getParent() const;
 
       private:
 
         const char * _label;
-        const Labels * _parent;
+        const Context * _parent;
 
     };
 
