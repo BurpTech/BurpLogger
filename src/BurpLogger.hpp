@@ -5,3 +5,4 @@
 #include "BurpLogger/Level.hpp"
 #include "BurpLogger/Logger.hpp"
 #include "BurpLogger/Transport.hpp"
+#include "BurpLogger/Factory.hpp"

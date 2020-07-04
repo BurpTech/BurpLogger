@@ -5,22 +5,32 @@
 #include <stdarg.h>
 #include "../src/BurpLogger.hpp"
 
-template <size_t messageSize>
+template <size_t messageSize, size_t loggerCount>
 class TestTransport : public BurpLogger::Transport {
 
   public:
 
-    void log(const BurpLogger::Context & context, const BurpLogger::Entry & entry) override {
-      _init(context.getLabel());
-      const BurpLogger::Context * parent = context.getParent();
-      while (parent) {
-        _printf("%s: %s", parent->getLabel(), getMessage());
-        parent = parent->getParent();
+    const void * cache(const BurpLogger::Context * context) override {
+      if (_contextCount < loggerCount) {
+        char * contextString = _contextStrings[_contextCount++];
+        _init(context->getLabel());
+        const BurpLogger::Context * parent = context->getParent();
+        while (parent) {
+          _printf("%s: %s", parent->getLabel(), getMessage());
+          parent = parent->getParent();
+        }
+        strncpy(contextString, getMessage(), messageSize);
+        return contextString;
       }
+      return nullptr;
+    }
+
+    void log(const void * cache, const BurpLogger::Entry & entry) override {
+      const char * contextString = static_cast<const char *>(cache);
       _printf(
           "%s: %s: %s",
           BurpLogger::Level::c_str(entry.getLevel()),
-          getMessage(),
+          contextString,
           entry.getMessage()
       );
     }
@@ -33,6 +43,8 @@ class TestTransport : public BurpLogger::Transport {
 
     char _buffers[2][messageSize];
     unsigned char _current = 0;
+    char _contextStrings[loggerCount][messageSize];
+    size_t _contextCount = 0;
 
     void _init(const char * source) {
       strncpy(_buffers[_current], source, messageSize);

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Context.hpp"
+#include "../Context/Interface.hpp"
 #include "../Entry/Interface.hpp"
 
 namespace BurpLogger {
@@ -11,7 +11,8 @@ namespace BurpLogger {
 
         public:
 
-          virtual void log(const Context & context, const Entry::Interface & entry) = 0;
+          virtual const void * cache(const Context::Interface * context) = 0;
+          virtual void log(const void * cache, const Entry::Interface & entry) = 0;
 
       };
 

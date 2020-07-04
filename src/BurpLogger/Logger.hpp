@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Internal/Logger/Instance.hpp"
+#include "Internal/Logger/Interface.hpp"
 
 namespace BurpLogger {
-  template <size_t messageSize>
-  using Logger = Internal::Logger::Instance<messageSize>;
+  using Logger = Internal::Logger::Interface;
 }

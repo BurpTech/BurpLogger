@@ -3,14 +3,16 @@
 #include <array>
 #include <cstddef>
 #include "../Entry/Instance.hpp"
-#include "../Transport/List/Interface.hpp"
+#include "../Transport/List.hpp"
+#include "../Context/Instance.hpp"
+#include "../Factory/Interface.hpp"
 #include "Interface.hpp"
 
 #define BURP_LOGGER_LEVEL_OVERRIDES(LEVEL)\
-  void LEVEL(const char * format, va_list args) override {\
+  void LEVEL(const char * format, va_list args) const override {\
     log(Level::LEVEL, format, args);\
   }\
-  void LEVEL(const char * format, ...) override {\
+  void LEVEL(const char * format, ...) const override {\
     va_list args;\
     va_start(args, format);\
     log(Level::LEVEL, format, args);\
@@ -21,37 +23,37 @@ namespace BurpLogger {
   namespace Internal {
     namespace Logger {
 
-      template <size_t messageSize>
+      template <size_t messageSize, size_t transportCount>
       class Instance : public Interface {
 
         public:
 
           using Entry = Entry::Instance<messageSize>;
+          using TransportList = Transport::List<transportCount>;
+          using Context = Context::Instance<transportCount>;
 
-          Instance(const char * label, const Transport::List::Interface & transportList) :
-            _context(label),
-            _transportList(transportList)
-          {}
-
-          Instance(const char * label, Interface & parent) :
-            _context(label, &(parent.getContext())),
-            _transportList(parent.getTransportList())
-          {}
-
-          const Context & getContext() const override {
-            return _context;
+          Instance(
+              Context * context,
+              const TransportList & transportList,
+              Factory::Interface * factory
+          ) :
+            _context(context),
+            _transportList(transportList),
+            _factory(factory)
+          {
+            _transportList.cache(_context);
           }
 
-          const Transport::List::Interface & getTransportList() const override {
-            return _transportList;
+          const Interface * create(const char * label) const override {
+            return _factory->create(label, _context);
           }
 
-          void log(Level::Level level, const char * format, va_list args) override {
+          void log(Level::Level level, const char * format, va_list args) const override {
             const Entry entry(level, format, args);
             _transportList.log(_context, entry);
           }
 
-          void log(Level::Level level, const char * format, ...) override {
+          void log(Level::Level level, const char * format, ...) const override {
             va_list args;
             va_start(args, format);
             log(level, format, args);
@@ -67,8 +69,9 @@ namespace BurpLogger {
 
         private:
 
-          const Context _context;
-          const Transport::List::Interface & _transportList;
+          Context * _context;
+          const TransportList & _transportList;
+          Factory::Interface * _factory;
 
       };
 

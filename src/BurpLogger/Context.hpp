@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Internal/Context.hpp"
+#include "Internal/Context/Interface.hpp"
 
 namespace BurpLogger {
-  using Context = Internal::Context;
+  using Context = Internal::Context::Interface;
 }
