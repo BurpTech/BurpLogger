@@ -23,7 +23,10 @@
 #include <unity.h>
 #include <BurpUnity.hpp>
 
-Runner<0> runner({
+#include "Logger.hpp"
+
+Runner<1> runner({
+    &Logger::tests
 });
 Memory memory;
 bool running = true;
