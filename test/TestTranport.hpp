@@ -39,6 +39,10 @@ class TestTransport : public BurpLogger::Transport {
       return _buffers[_current];
     }
 
+    void reset() {
+      _init("");
+    }
+
   private:
 
     char _buffers[2][messageSize];

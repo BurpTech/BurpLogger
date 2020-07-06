@@ -48,12 +48,14 @@ namespace BurpLogger {
             return _factory->create(label, _context);
           }
 
-          void log(Level::Level level, const char * format, va_list args) const override {
-            const Entry entry(level, format, args);
-            _transportList.log(_context, entry);
+          void log(const Level::Level level, const char * format, va_list args) const override {
+            if (_factory->getLevel() >= level) {
+              const Entry entry(level, format, args);
+              _transportList.log(_context, entry);
+            }
           }
 
-          void log(Level::Level level, const char * format, ...) const override {
+          void log(const Level::Level level, const char * format, ...) const override {
             va_list args;
             va_start(args, format);
             log(level, format, args);

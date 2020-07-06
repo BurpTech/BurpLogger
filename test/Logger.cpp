@@ -5,11 +5,19 @@
 #include "TestTranport.hpp"
 #include "Logger.hpp"
 
-#define LEVEL_TEST(LEVEL)\
+#define SHOULD_LOG(LOGGER, LEVEL)\
   d.describe(#LEVEL, [](Describe & d) {\
       d.it("should log the message with level " #LEVEL, []() {\
-          logger->LEVEL("message: %d: %d", 1, 2);\
+          LOGGER##Logger->LEVEL("message: %d: %d", 1, 2);\
           TEST_ASSERT_EQUAL_STRING(#LEVEL ": label1: label2: label3: message: 1: 2", transport.getMessage());\
+      });\
+  })
+
+#define SHOULD_NOT_LOG(LOGGER, LEVEL)\
+  d.describe(#LEVEL, [](Describe & d) {\
+      d.it("should not log the message with level " #LEVEL, []() {\
+          LOGGER##Logger->LEVEL("message: %d: %d", 1, 2);\
+          TEST_ASSERT_EQUAL_STRING("", transport.getMessage());\
       });\
   })
 
@@ -22,30 +30,65 @@ namespace Logger {
   using namespace BurpLogger;
   using Factory = BurpLogger::Factory<messageSize, transportCount, loggerCount>;
 
-  TestTransport<messageSize, loggerCount> transport;
+  TestTransport<messageSize, loggerCount * 3> transport;
   const Factory::Transports transports = {
     &transport
   };
-  Factory factory(transports);
-  auto parent1 = factory.create("label1");
-  auto parent2 = parent1->create("label2");
-  auto logger = parent2->create("label3");
+
+  Factory sillyFactory(Level::silly, transports);
+  auto sillyParent1 = sillyFactory.create("label1");
+  auto sillyParent2 = sillyParent1->create("label2");
+  auto sillyLogger = sillyParent2->create("label3");
+
+  Factory infoFactory(Level::info, transports);
+  auto infoParent1 = infoFactory.create("label1");
+  auto infoParent2 = infoParent1->create("label2");
+  auto infoLogger = infoParent2->create("label3");
+
+  Factory noneFactory(Level::none, transports);
+  auto noneParent1 = noneFactory.create("label1");
+  auto noneParent2 = noneParent1->create("label2");
+  auto noneLogger = noneParent2->create("label3");
 
   Module tests("Logger", [](Describe & d) {
 
+      d.beforeEach([]() {
+          transport.reset();
+      });
+
       d.describe("log", [](Describe & d) {
           d.it("should log the message with the level", []() {
-              logger->log(Level::info, "message: %d: %d", 1, 2);
+              sillyLogger->log(Level::info, "message: %d: %d", 1, 2);
               TEST_ASSERT_EQUAL_STRING("info: label1: label2: label3: message: 1: 2", transport.getMessage());
           });
       });
 
-      LEVEL_TEST(error);
-      LEVEL_TEST(warn);
-      LEVEL_TEST(info);
-      LEVEL_TEST(verbose);
-      LEVEL_TEST(debug);
-      LEVEL_TEST(silly);
+      d.describe("with the log level set to silly", [](Describe & d) {
+          SHOULD_LOG(silly, error);
+          SHOULD_LOG(silly, warn);
+          SHOULD_LOG(silly, info);
+          SHOULD_LOG(silly, verbose);
+          SHOULD_LOG(silly, debug);
+          SHOULD_LOG(silly, silly);
+      });
+
+      d.describe("with the log level set to info", [](Describe & d) {
+          SHOULD_LOG(info, error);
+          SHOULD_LOG(info, warn);
+          SHOULD_LOG(info, info);
+          SHOULD_NOT_LOG(info, verbose);
+          SHOULD_NOT_LOG(info, debug);
+          SHOULD_NOT_LOG(info, silly);
+      });
+
+      d.describe("with the log level set to none", [](Describe & d) {
+          SHOULD_NOT_LOG(none, error);
+          SHOULD_NOT_LOG(none, warn);
+          SHOULD_NOT_LOG(none, info);
+          SHOULD_NOT_LOG(none, verbose);
+          SHOULD_NOT_LOG(none, debug);
+          SHOULD_NOT_LOG(none, silly);
+      });
 
   });
 

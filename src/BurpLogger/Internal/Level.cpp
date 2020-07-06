@@ -8,6 +8,7 @@ namespace BurpLogger {
       #define C_STR_DEFAULT default: return "unknown"
       const char * c_str(const Level level) {
         switch (level) {
+          C_STR_CASE(none);
           C_STR_CASE(error);
           C_STR_CASE(warn);
           C_STR_CASE(info);

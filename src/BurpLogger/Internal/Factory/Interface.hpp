@@ -12,6 +12,7 @@ namespace BurpLogger {
         public:
 
           virtual const Logger::Interface * create(const char * label, const Context::Interface * context) = 0;
+          virtual const Level::Level getLevel() const = 0;
       };
 
     }

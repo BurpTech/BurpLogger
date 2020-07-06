@@ -5,6 +5,8 @@ namespace BurpLogger {
     namespace Level {
 
       enum Level {
+        none,
+        always,
         error,
         warn,
         info,

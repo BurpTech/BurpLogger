@@ -18,12 +18,13 @@ namespace BurpLogger {
           using TransportList = Transport::List<transportCount>;
           using Transports = typename TransportList::Transports;
 
-          Instance(const Transports & transports) :
+          Instance(const Level::Level level, const Transports & transports) :
+            _level(level),
             _transportList(transports),
             _count(0)
           {}
 
-          const Logger::Interface * create(const char * label, const Context::Interface * parent = nullptr) {
+          const Logger::Interface * create(const char * label, const Context::Interface * parent = nullptr) override {
             if (_count < loggerCount) {
               auto context = new(&(_contexts[_count])) Context(label, parent);
               auto logger = new(&(_loggers[_count])) Logger(context, _transportList, this);
@@ -33,11 +34,16 @@ namespace BurpLogger {
             return nullptr;
           }
 
+          const Level::Level getLevel() const override {
+            return _level;
+          }
+
         private:
 
           using Logger = Logger::Instance<messageSize, transportCount>;
           using Context = Context::Instance<transportCount>;
 
+          const Level::Level _level;
           char _loggers[loggerCount][sizeof(Logger)];
           char _contexts[loggerCount][sizeof(Context)];
           const TransportList _transportList;
