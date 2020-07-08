@@ -50,6 +50,8 @@ namespace Logger {
   auto noneParent2 = noneParent1->create("label2");
   auto noneLogger = noneParent2->create("label3");
 
+  BurpStatus::Status status;
+
   Module tests("Logger", [](Describe & d) {
 
       d.beforeEach([]() {
@@ -60,6 +62,27 @@ namespace Logger {
           d.it("should log the message with the level", []() {
               sillyLogger->log(Level::info, "message: %d: %d", 1, 2);
               TEST_ASSERT_EQUAL_STRING("info: label1: label2: label3: message: 1: 2", transport.getMessage());
+          });
+          d.describe("with status level INFO", [](Describe & d) {
+            d.it("should log the status string as info", []() {
+                status.set(BurpStatus::Status::Level::INFO, BurpStatus::Status::ok);
+                sillyLogger->log("label", status);
+                TEST_ASSERT_EQUAL_STRING("info: label1: label2: label3: label: BurpStatus::Status : ok", transport.getMessage());
+            });
+          });
+          d.describe("with status level WARNING", [](Describe & d) {
+            d.it("should log the status string as warn", []() {
+                status.set(BurpStatus::Status::Level::WARNING, BurpStatus::Status::ok);
+                sillyLogger->log("label", status);
+                TEST_ASSERT_EQUAL_STRING("warn: label1: label2: label3: label: BurpStatus::Status : ok", transport.getMessage());
+            });
+          });
+          d.describe("with status level ERROR", [](Describe & d) {
+            d.it("should log the status string as error", []() {
+                status.set(BurpStatus::Status::Level::ERROR, BurpStatus::Status::ok);
+                sillyLogger->log("label", status);
+                TEST_ASSERT_EQUAL_STRING("error: label1: label2: label3: label: BurpStatus::Status : ok", transport.getMessage());
+            });
           });
       });
 

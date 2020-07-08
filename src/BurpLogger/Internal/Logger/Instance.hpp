@@ -62,6 +62,20 @@ namespace BurpLogger {
             va_end(args);
           }
 
+          void log(const char * label, const BurpStatus::Status & status) const override {
+            switch (status.getLevel()) {
+              case BurpStatus::Status::Level::INFO:
+                info("%s: %s", label, status.c_str());
+                break;
+              case BurpStatus::Status::Level::WARNING:
+                warn("%s: %s", label, status.c_str());
+                break;
+              case BurpStatus::Status::Level::ERROR:
+                error("%s: %s", label, status.c_str());
+                break;
+            }
+          };
+
           BURP_LOGGER_LEVEL_OVERRIDES(always)
           BURP_LOGGER_LEVEL_OVERRIDES(error)
           BURP_LOGGER_LEVEL_OVERRIDES(warn)

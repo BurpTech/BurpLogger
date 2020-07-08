@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdarg.h>
+#include <BurpStatus.hpp>
 #include "../Level.hpp"
 
 #define BURP_LOGGER_LEVEL_VIRTUALS(LEVEL)\
@@ -19,6 +20,7 @@ namespace BurpLogger {
 
           virtual void log(Level::Level level, const char * format, va_list args) const = 0;
           virtual void log(Level::Level level, const char * format, ...) const = 0;
+          virtual void log(const char * label, const BurpStatus::Status & status) const = 0;
 
           BURP_LOGGER_LEVEL_VIRTUALS(always)
           BURP_LOGGER_LEVEL_VIRTUALS(error)
