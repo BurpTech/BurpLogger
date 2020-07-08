@@ -3,7 +3,7 @@
 #endif
 
 #define BURP_UNITY_MAX_MODULE 1
-#define BURP_UNITY_MAX_DESCRIBE 9
+#define BURP_UNITY_MAX_DESCRIBE 10
 #define BURP_UNITY_MAX_POP 3
 #define BURP_UNITY_MAX_TEST 1
 #define BURP_UNITY_MAX_IT 1
@@ -43,7 +43,7 @@ void loop() {
     runner.loop();
     if (runner.isFinished()) {
       // BurpUnity::Usage::printUsage(memory, runner);
-      // BurpUnity::Usage::printUsageDefines(memory, runner);
+      // BurpUnity::Usage::printUsageDefines(memory, runner, 1);
       status = UNITY_END();
       running = false;
     }

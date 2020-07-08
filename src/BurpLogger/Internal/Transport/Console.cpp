@@ -24,7 +24,7 @@ namespace BurpLogger {
 
       void Console::_printLevel(const Level::Level level) {
         switch (level) {
-          case Level::none:
+          case Level::always:
             break;
           case Level::error:
             PRINTF("ERROR  : ");

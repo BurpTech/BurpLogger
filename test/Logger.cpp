@@ -64,6 +64,7 @@ namespace Logger {
       });
 
       d.describe("with the log level set to silly", [](Describe & d) {
+          SHOULD_LOG(silly, always);
           SHOULD_LOG(silly, error);
           SHOULD_LOG(silly, warn);
           SHOULD_LOG(silly, info);
@@ -73,6 +74,7 @@ namespace Logger {
       });
 
       d.describe("with the log level set to info", [](Describe & d) {
+          SHOULD_LOG(info, always);
           SHOULD_LOG(info, error);
           SHOULD_LOG(info, warn);
           SHOULD_LOG(info, info);
@@ -82,6 +84,7 @@ namespace Logger {
       });
 
       d.describe("with the log level set to none", [](Describe & d) {
+          SHOULD_LOG(none, always);
           SHOULD_NOT_LOG(none, error);
           SHOULD_NOT_LOG(none, warn);
           SHOULD_NOT_LOG(none, info);

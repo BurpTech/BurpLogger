@@ -20,6 +20,7 @@ namespace BurpLogger {
           virtual void log(Level::Level level, const char * format, va_list args) const = 0;
           virtual void log(Level::Level level, const char * format, ...) const = 0;
 
+          BURP_LOGGER_LEVEL_VIRTUALS(always)
           BURP_LOGGER_LEVEL_VIRTUALS(error)
           BURP_LOGGER_LEVEL_VIRTUALS(warn)
           BURP_LOGGER_LEVEL_VIRTUALS(info)

@@ -62,6 +62,7 @@ namespace BurpLogger {
             va_end(args);
           }
 
+          BURP_LOGGER_LEVEL_OVERRIDES(always)
           BURP_LOGGER_LEVEL_OVERRIDES(error)
           BURP_LOGGER_LEVEL_OVERRIDES(warn)
           BURP_LOGGER_LEVEL_OVERRIDES(info)
