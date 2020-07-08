@@ -6,7 +6,7 @@
 #include "../src/BurpLogger.hpp"
 
 template <size_t messageSize, size_t loggerCount>
-class TestTransport : public BurpLogger::Transport {
+class TestTransport : public BurpLogger::Transport::Interface {
 
   public:
 
