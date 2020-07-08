@@ -21,7 +21,8 @@ namespace BurpLogger {
           Instance(const Level::Level level, const Transports & transports) :
             _level(level),
             _transportList(transports),
-            _count(0)
+            _count(0),
+            _maxExceeded(false)
           {}
 
           const Logger::Interface * create(const char * label, const Context::Interface * parent = nullptr) override {
@@ -31,11 +32,20 @@ namespace BurpLogger {
               _count++;
               return logger;
             }
+            _maxExceeded = true;
             return nullptr;
           }
 
           const Level::Level getLevel() const override {
             return _level;
+          }
+
+          const size_t getCount() const override {
+            return _count;
+          }
+
+          const bool maxExceeded() const override {
+            return _maxExceeded;
           }
 
         private:
@@ -48,6 +58,7 @@ namespace BurpLogger {
           char _contexts[loggerCount][sizeof(Context)];
           const TransportList _transportList;
           size_t _count;
+          bool _maxExceeded;
 
       };
 
